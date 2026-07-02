@@ -2,46 +2,51 @@ package br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital;
 
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.UpdateHospitalInput;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutput;
-import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalRepository;
+import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
+import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.exception.DuplicateResourceException;
+import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
+import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UpdateHospitalUseCase {
 
-    private final HospitalRepository hospitalRepository;
+    private final HospitalGateway hospitalGateway;
+    private final AddressBaseGateway addressBaseGateway;
 
-    public HospitalOutput execute(UpdateHospitalInput input) {
-        Hospital hospital = hospitalRepository.findById(input.id())
+    public HospitalOutput execute(AuthenticatedUser currentUser, UUID hospitalId, UpdateHospitalInput input) {
+        if (currentUser == null) {
+            throw new ForbiddenException("Authentication required");
+        }
+
+        if (currentUser.role() != Role.ADMIN || !hospitalId.equals(currentUser.hospitalId())) {
+            throw new ForbiddenException("Only administrators of this hospital can update it");
+        }
+
+        Hospital hospital = hospitalGateway.findById(hospitalId)
                 .orElseThrow(() -> new NotFoundException("Hospital not found"));
 
-        Cnpj cnpj = Cnpj.of(input.cnpj());
-        validateUniqueHospital(input, cnpj);
-
         hospital.update(
-                input.name(),
-                cnpj,
-                input.cnes(),
                 input.email(),
                 input.phone(),
-                HospitalUseCaseMapper.toAddress(input.address()),
                 input.status()
         );
 
-        return HospitalUseCaseMapper.toOutput(hospitalRepository.save(hospital));
-    }
+        Hospital updatedHospital = hospitalGateway.save(hospital);
 
-    private void validateUniqueHospital(UpdateHospitalInput input, Cnpj cnpj) {
-        if (hospitalRepository.existsByCnpjAndIdNot(cnpj, input.id())) {
-            throw new DuplicateResourceException("CNPJ already registered");
-        }
-        if (hospitalRepository.existsByCnesAndIdNot(input.cnes(), input.id())) {
-            throw new DuplicateResourceException("CNES already registered");
-        }
+        AddressBase addressBase = addressBaseGateway.findById(updatedHospital.getAddressBaseId())
+                .orElseThrow(() -> new NotFoundException("Address base not found"));
+
+        return HospitalOutput.from(updatedHospital, addressBase);
     }
 }

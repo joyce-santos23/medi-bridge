@@ -5,7 +5,7 @@ import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cn
 import java.util.Optional;
 import java.util.UUID;
 
-public interface HospitalRepository {
+public interface HospitalGateway {
 
     Hospital save(Hospital hospital);
 
