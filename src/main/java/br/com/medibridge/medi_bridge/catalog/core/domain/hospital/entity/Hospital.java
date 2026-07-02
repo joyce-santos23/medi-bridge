@@ -2,16 +2,13 @@ package br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity;
 
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.enums.HospitalStatus;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
-import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Address;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public class Hospital {
 
     @EqualsAndHashCode.Include
@@ -21,7 +18,9 @@ public class Hospital {
     private String cnes;
     private String email;
     private String phone;
-    private Address address;
+    private UUID addressBaseId;
+    private String number;
+    private String complement;
     private HospitalStatus status;
 
     private Hospital(
@@ -31,17 +30,21 @@ public class Hospital {
             String cnes,
             String email,
             String phone,
-            Address address,
+            UUID addressBaseId,
+            String number,
+            String complement,
             HospitalStatus status
     ) {
-        this.id = require(id, "Hospital id is required");
-        this.name = requireText(name, "Hospital name is required");
-        this.cnpj = require(cnpj, "Hospital CNPJ is required");
-        this.cnes = requireText(cnes, "Hospital CNES is required");
-        this.email = requireText(email, "Hospital email is required");
-        this.phone = requireText(phone, "Hospital phone is required");
-        this.address = require(address, "Hospital address is required");
-        this.status = require(status, "Hospital status is required");
+        this.id = id;
+        this.name = name;
+        this.cnpj = cnpj;
+        this.cnes = cnes;
+        this.email = email;
+        this.phone = phone;
+        this.addressBaseId = addressBaseId;
+        this.number = number;
+        this.complement = complement;
+        this.status = status;
     }
 
     public static Hospital create(
@@ -50,9 +53,30 @@ public class Hospital {
             String cnes,
             String email,
             String phone,
-            Address address
+            UUID addressBaseId,
+            String number,
+            String complement
     ) {
-        return new Hospital(UUID.randomUUID(), name, cnpj, cnes, email, phone, address, HospitalStatus.ACTIVE);
+        require(name, "Hospital name is required");
+        require(cnpj, "Hospital CNPJ is required");
+        require(cnes, "Hospital CNES is required");
+        require(email, "Hospital email is required");
+        require(phone, "Hospital phone is required");
+        require(addressBaseId, "Hospital addressBaseId is required");
+        requireText(number, "Hospital number is required");
+
+        return new Hospital(
+                UUID.randomUUID(),
+                name,
+                cnpj,
+                cnes,
+                email,
+                phone,
+                addressBaseId,
+                number,
+                normalize(complement),
+                HospitalStatus.ACTIVE
+        );
     }
 
     public static Hospital restore(
@@ -62,45 +86,72 @@ public class Hospital {
             String cnes,
             String email,
             String phone,
-            Address address,
+            UUID addressBaseId,
+            String number,
+            String complement,
             HospitalStatus status
-    ) {
-        return new Hospital(id, name, cnpj, cnes, email, phone, address, status);
-    }
-
-    public void update(
-            String name,
-            Cnpj cnpj,
-            String cnes,
-            String email,
-            String phone,
-            Address address,
-            HospitalStatus status
-    ) {
-        this.name = requireText(name, "Hospital name is required");
-        this.cnpj = require(cnpj, "Hospital CNPJ is required");
-        this.cnes = requireText(cnes, "Hospital CNES is required");
-        this.email = requireText(email, "Hospital email is required");
-        this.phone = requireText(phone, "Hospital phone is required");
-        this.address = require(address, "Hospital address is required");
-        this.status = require(status, "Hospital status is required");
-    }
-
-    public boolean isActive() {
-        return HospitalStatus.ACTIVE.equals(status);
-    }
-
-    private static String requireText(String value, String message) {
-        if (value == null || value.isBlank()) {
-            throw new ValidationException(message);
+        ) {
+            require(id, "Hospital id is required");
+            require(status, "Hospital status is required");
+    
+            return new Hospital(
+                    id,
+                    name,
+                    cnpj,
+                    cnes,
+                    email,
+                    phone,
+                    addressBaseId,
+                    number,
+                    normalize(complement),
+                    status
+            );
         }
-        return value.trim();
-    }
-
-    private static <T> T require(T value, String message) {
-        if (value == null) {
-            throw new ValidationException(message);
+    
+        public void update(
+                String email,
+                String phone,
+                HospitalStatus status
+        ) {
+            if (hasText(email)) {
+                this.email = email;
+            }
+    
+            if (hasText(phone)) {
+                this.phone = phone;
+            }
+    
+            if (status != null) {
+                this.status = status;
+            }
         }
-        return value;
+    
+        public boolean isActive() {
+            return HospitalStatus.ACTIVE.equals(status);
+        }
+    
+        private static String requireText(String value, String message) {
+            if (value == null || value.isBlank()) {
+                throw new ValidationException(message);
+            }
+            return value.trim();
+        }
+    
+        private static <T> T require(T value, String message) {
+            if (value == null) {
+                throw new ValidationException(message);
+            }
+            return value;
+        }
+    
+        private static boolean hasText(String value) {
+            return value != null && !value.isBlank();
+        }
+
+        private static String normalize(String value) {
+            if (value == null || value.isBlank()) {
+                return null;
+            }
+            return value.trim();
+        }
     }
-}

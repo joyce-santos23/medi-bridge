@@ -36,15 +36,15 @@ public class User {
             UserStatus status,
             String passwordHash
     ) {
-        this.id = require(id, "User id is required");
-        this.hospitalId = require(hospitalId, "Hospital id is required");
-        this.name = requireText(name, "User name is required");
-        this.email = requireText(email, "User email is required");
-        this.council = require(council, "Professional council is required");
-        this.professionalRegistration = requireText(professionalRegistration, "Professional registration is required");
-        this.role = require(role, "User role is required");
-        this.status = require(status, "User status is required");
-        this.passwordHash = requireText(passwordHash, "Password hash is required");
+        this.id = id;
+        this.hospitalId = hospitalId;
+        this.name = name;
+        this.email = email;
+        this.council = council;
+        this.professionalRegistration = professionalRegistration;
+        this.role = role;
+        this.status = status;
+        this.passwordHash = passwordHash;
     }
 
     public static User create(
@@ -56,6 +56,15 @@ public class User {
             Role role,
             String passwordHash
     ) {
+
+        require(hospitalId, "Hospital id is required");
+        require(name, "User name is required");
+        require(email, "User email is required");
+        require(council, "Professional council is required");
+        require(professionalRegistration, "Professional registration is required");
+        require(role, "User role is required");
+        require(passwordHash, "Password hash is required");
+
         return new User(
                 UUID.randomUUID(),
                 hospitalId,
@@ -80,42 +89,52 @@ public class User {
             UserStatus status,
             String passwordHash
     ) {
-        return new User(id, hospitalId, name, email, council, professionalRegistration, role, status, passwordHash);
+        return new User(
+                id,
+                hospitalId,
+                name,
+                email,
+                council,
+                professionalRegistration,
+                role,
+                status,
+                passwordHash
+        );
     }
 
     public void update(
             String name,
             String email,
-            ProfessionalCouncil council,
-            String professionalRegistration,
             Role role,
-            UserStatus status,
-            String passwordHash
+            UserStatus status
     ) {
-        this.name = requireText(name, "User name is required");
-        this.email = requireText(email, "User email is required");
-        this.council = require(council, "Professional council is required");
-        this.professionalRegistration = requireText(professionalRegistration, "Professional registration is required");
-        this.role = require(role, "User role is required");
-        this.status = require(status, "User status is required");
-        this.passwordHash = requireText(passwordHash, "Password hash is required");
-    }
 
-    public boolean canAuthenticate() {
-        return UserStatus.ACTIVE.equals(status);
-    }
-
-    private static String requireText(String value, String message) {
-        if (value == null || value.isBlank()) {
-            throw new ValidationException(message);
+        if (hasText(name)) {
+            this.name = name;
         }
-        return value.trim();
+
+        if (hasText(email)) {
+            this.email = email;
+        }
+
+        if (role != null) {
+            this.role = role;
+        }
+
+        if (status != null) {
+            this.status = status;
+        }
     }
+
 
     private static <T> T require(T value, String message) {
         if (value == null) {
             throw new ValidationException(message);
         }
         return value;
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }

@@ -4,7 +4,7 @@ import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository {
+public interface UserGateway {
 
     User save(User user);
 

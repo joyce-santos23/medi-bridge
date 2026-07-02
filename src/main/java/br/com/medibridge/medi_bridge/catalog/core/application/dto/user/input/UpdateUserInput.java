@@ -9,10 +9,7 @@ public record UpdateUserInput(
         UUID id,
         String name,
         String email,
-        ProfessionalCouncil council,
-        String professionalRegistration,
         Role role,
-        UserStatus status,
-        String password
+        UserStatus status
 ) {
 }
