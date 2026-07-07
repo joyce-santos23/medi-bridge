@@ -9,4 +9,8 @@ public interface UserGateway {
     User save(User user);
 
     Optional<User> findById(UUID id);
+
+    Optional<User> findByEmail(String email);
+
+    java.util.List<User> findAllByHospitalId(UUID hospitalId);
 }
