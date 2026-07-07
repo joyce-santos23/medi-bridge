@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.port.address;
 
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import java.util.Optional;
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output;
 
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 
 public record AddressOutput(
         String street,

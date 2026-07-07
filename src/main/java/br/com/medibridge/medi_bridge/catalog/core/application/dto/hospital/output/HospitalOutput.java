@@ -2,7 +2,7 @@ package br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.outp
 
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.enums.HospitalStatus;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import java.util.UUID;
 
 public record HospitalOutput(

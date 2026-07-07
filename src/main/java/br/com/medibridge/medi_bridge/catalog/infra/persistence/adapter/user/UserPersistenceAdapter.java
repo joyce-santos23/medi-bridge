@@ -54,4 +54,18 @@ public class UserPersistenceAdapter implements UserGateway {
         return repository.findById(id)
                 .map(UserPersistenceMapper::toDomain);
     }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(UserPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public java.util.List<User> findAllByHospitalId(UUID hospitalId) {
+        return repository.findAllByHospitalId(hospitalId)
+                .stream()
+                .map(UserPersistenceMapper::toDomain)
+                .toList();
+    }
 }

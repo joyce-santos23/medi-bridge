@@ -2,33 +2,45 @@ package br.com.medibridge.medi_bridge.catalog.core.application.usecase.user;
 
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.UpdateUserInput;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
-import br.com.medibridge.medi_bridge.catalog.core.application.port.security.PasswordEncoder;
+import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
 import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
+import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UpdateUserUseCase {
 
     private final UserGateway userGateway;
     private final PasswordEncoder passwordEncoder;
 
     public UserOutput execute(AuthenticatedUser currentUser, UpdateUserInput input) {
+        log.info("Executing UpdateUserUseCase for user ID: {} by user ID: {}", input.id(), currentUser != null ? currentUser.id() : "anonymous");
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
         }
 
-        if (!currentUser.id().equals(input.id())) {
-            throw new ForbiddenException("You can only update your own user profile");
-        }
-
         User user = userGateway.findById(input.id())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> {
+                    log.warn("User with ID: {} not found during update profile", input.id());
+                    return new NotFoundException("User not found");
+                });
+
+        boolean isSelf = currentUser.id().equals(user.getId());
+        boolean isAdminOfSameHospital = currentUser.role() == Role.ADMIN 
+                && currentUser.hospitalId().equals(user.getHospitalId());
+
+        if (!isSelf && !isAdminOfSameHospital) {
+            log.warn("Access denied for user ID: {} attempting to update user profile ID: {}", currentUser.id(), input.id());
+            throw new ForbiddenException("You can only update your own user profile or you must be an admin of the same hospital");
+        }
 
         user.update(
                 input.name(),
@@ -37,6 +49,8 @@ public class UpdateUserUseCase {
                 input.status()
         );
 
-        return UserOutput.from(userGateway.save(user));
+        User updatedUser = userGateway.save(user);
+        log.info("Successfully updated user profile for ID: {}", input.id());
+        return UserOutput.from(updatedUser);
     }
 }

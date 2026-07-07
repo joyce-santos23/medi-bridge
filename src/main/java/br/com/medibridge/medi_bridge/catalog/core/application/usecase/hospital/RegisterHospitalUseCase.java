@@ -6,21 +6,23 @@ import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.outpu
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutput;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
-import br.com.medibridge.medi_bridge.catalog.core.application.port.security.PasswordEncoder;
+import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
-import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.exception.DuplicateResourceException;
+import br.com.medibridge.medi_bridge.catalog.core.domain.exception.DuplicateResourceException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RegisterHospitalUseCase {
 
     private final HospitalGateway hospitalGateway;
@@ -30,6 +32,7 @@ public class RegisterHospitalUseCase {
 
     @Transactional
     public RegisterHospitalOutput execute(RegisterHospitalInput input) {
+        log.info("Executing RegisterHospitalUseCase for hospital name: {}", input.name());
         Cnpj cnpj = Cnpj.of(input.cnpj());
         validateUniqueHospital(cnpj, input.cnes());
 
@@ -47,6 +50,8 @@ public class RegisterHospitalUseCase {
         );
 
         Hospital savedHospital = hospitalGateway.save(hospital);
+        log.info("Hospital entity saved with ID: {}", savedHospital.getId());
+
         User adminUser = User.create(
                 savedHospital.getId(),
                 input.adminName(),
@@ -58,6 +63,7 @@ public class RegisterHospitalUseCase {
         );
 
         User savedAdminUser = userGateway.save(adminUser);
+        log.info("Hospital admin user saved with ID: {} for hospital ID: {}", savedAdminUser.getId(), savedHospital.getId());
 
         return new RegisterHospitalOutput(
                 HospitalOutput.from(savedHospital, addressBase),
@@ -66,11 +72,14 @@ public class RegisterHospitalUseCase {
     }
 
     private void validateUniqueHospital(Cnpj cnpj, String cnes) {
+        log.debug("Validating uniqueness of CNPJ: {} and CNES: {}", cnpj.getValue(), cnes);
         if (hospitalGateway.existsByCnpj(cnpj)) {
-            throw new DuplicateResourceException("CNPJ already registered");
+            log.warn("Duplicate hospital registration attempt: CNPJ {} is already registered", cnpj.getValue());
+            throw new DuplicateResourceException("cnpj", "CNPJ already registered");
         }
         if (hospitalGateway.existsByCnes(cnes)) {
-            throw new DuplicateResourceException("CNES already registered");
+            log.warn("Duplicate hospital registration attempt: CNES {} is already registered", cnes);
+            throw new DuplicateResourceException("cnes", "CNES already registered");
         }
     }
 }
