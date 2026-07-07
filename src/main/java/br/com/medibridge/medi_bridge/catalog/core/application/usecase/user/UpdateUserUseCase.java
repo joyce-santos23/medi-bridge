@@ -8,6 +8,7 @@ import br.com.medibridge.medi_bridge.catalog.core.application.security.Authentic
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
+import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,16 +27,20 @@ public class UpdateUserUseCase {
             throw new ForbiddenException("Authentication required");
         }
 
-        if (!currentUser.id().equals(input.id())) {
-            log.warn("Access denied for user ID: {} attempting to update user profile ID: {}", currentUser.id(), input.id());
-            throw new ForbiddenException("You can only update your own user profile");
-        }
-
         User user = userGateway.findById(input.id())
                 .orElseThrow(() -> {
                     log.warn("User with ID: {} not found during update profile", input.id());
                     return new NotFoundException("User not found");
                 });
+
+        boolean isSelf = currentUser.id().equals(user.getId());
+        boolean isAdminOfSameHospital = currentUser.role() == Role.ADMIN 
+                && currentUser.hospitalId().equals(user.getHospitalId());
+
+        if (!isSelf && !isAdminOfSameHospital) {
+            log.warn("Access denied for user ID: {} attempting to update user profile ID: {}", currentUser.id(), input.id());
+            throw new ForbiddenException("You can only update your own user profile or you must be an admin of the same hospital");
+        }
 
         user.update(
                 input.name(),

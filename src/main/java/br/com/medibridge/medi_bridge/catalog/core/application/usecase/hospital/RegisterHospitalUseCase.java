@@ -8,11 +8,11 @@ import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.Us
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
-import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.exception.DuplicateResourceException;
+import br.com.medibridge.medi_bridge.catalog.core.domain.exception.DuplicateResourceException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

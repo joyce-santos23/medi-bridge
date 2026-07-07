@@ -51,7 +51,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequest request,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
@@ -65,7 +65,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getById(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
         log.info("Request to retrieve user profile for ID: {}", id);

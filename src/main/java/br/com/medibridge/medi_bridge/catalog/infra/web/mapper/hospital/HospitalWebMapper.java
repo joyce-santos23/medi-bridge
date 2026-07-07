@@ -57,7 +57,7 @@ public class HospitalWebMapper {
         return new UpdateHospitalInput(
                 request.email(),
                 request.phone(),
-                HospitalStatus.valueOf(request.status().name())
+                request.status() != null ? HospitalStatus.valueOf(request.status().name()) : null
         );
     }
 

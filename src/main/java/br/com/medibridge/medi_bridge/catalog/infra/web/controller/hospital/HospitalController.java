@@ -43,7 +43,7 @@ public class HospitalController {
 
     @PutMapping("/{id}")
     public ResponseEntity<HospitalResponse> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateHospitalRequest request,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
@@ -57,7 +57,7 @@ public class HospitalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<HospitalResponse> getById(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
         log.info("Request to get hospital details for ID: {}", id);

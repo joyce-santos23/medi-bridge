@@ -37,7 +37,7 @@ public class UserWebMapper {
                 request.name(),
                 request.email(),
                 request.role(),
-                UserStatus.valueOf(request.status().name())
+                request.status() != null ? UserStatus.valueOf(request.status().name()) : null
         );
     }
 

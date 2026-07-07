@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.catalog.infra.persistence.adapter.address;
 
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.infra.persistence.entity.address.AddressBaseEntity;
 import br.com.medibridge.medi_bridge.catalog.infra.persistence.mapper.address.AddressBasePersistenceMapper;
 import br.com.medibridge.medi_bridge.catalog.infra.persistence.repository.address.AddressBaseRepository;

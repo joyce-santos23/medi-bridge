@@ -3,7 +3,7 @@ package br.com.medibridge.medi_bridge.catalog.infra.web.handler;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
-import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.exception.DuplicateResourceException;
+import br.com.medibridge.medi_bridge.catalog.core.domain.exception.DuplicateResourceException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

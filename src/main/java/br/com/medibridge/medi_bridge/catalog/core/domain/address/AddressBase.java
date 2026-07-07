@@ -1,4 +1,4 @@
-package br.com.medibridge.medi_bridge.catalog.core.domain.address.entity;
+package br.com.medibridge.medi_bridge.catalog.core.domain.address;
 
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
 import java.util.UUID;

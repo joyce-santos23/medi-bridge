@@ -12,7 +12,7 @@ import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
-import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.exception.DuplicateResourceException;
+import br.com.medibridge.medi_bridge.catalog.core.domain.exception.DuplicateResourceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

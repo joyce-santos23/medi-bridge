@@ -3,7 +3,7 @@ package br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutput;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
 import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;

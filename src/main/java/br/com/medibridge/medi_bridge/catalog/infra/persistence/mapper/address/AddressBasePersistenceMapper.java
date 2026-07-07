@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.infra.persistence.mapper.address;
 
-import br.com.medibridge.medi_bridge.catalog.core.domain.address.entity.AddressBase;
+import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.infra.persistence.entity.address.AddressBaseEntity;
 
 public final class AddressBasePersistenceMapper {
