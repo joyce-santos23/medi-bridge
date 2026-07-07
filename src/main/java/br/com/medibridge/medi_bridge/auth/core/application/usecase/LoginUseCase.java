@@ -31,6 +31,11 @@ public class LoginUseCase {
                     return new ValidationException("Invalid email or password");
                 });
 
+        if (user.getStatus() != br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.UserStatus.ACTIVE) {
+            log.warn("Login failed: user {} is inactive", input.email());
+            throw new ValidationException("User account is inactive");
+        }
+
         if (!passwordEncoder.matches(input.password(), user.getPasswordHash())) {
             log.warn("Login failed: incorrect password for email {}", input.email());
             throw new ValidationException("Invalid email or password");
