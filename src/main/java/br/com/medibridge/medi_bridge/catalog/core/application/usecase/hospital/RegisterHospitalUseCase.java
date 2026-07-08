@@ -11,8 +11,8 @@ import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGate
 import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.DuplicateResourceException;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
+import br.com.medibridge.medi_bridge.shared.domain.exception.DuplicateResourceException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

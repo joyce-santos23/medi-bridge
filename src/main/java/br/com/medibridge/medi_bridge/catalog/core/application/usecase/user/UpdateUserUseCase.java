@@ -4,11 +4,11 @@ import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.Upd
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

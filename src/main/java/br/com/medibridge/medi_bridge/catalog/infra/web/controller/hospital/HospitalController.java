@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.infra.web.controller.hospital;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital.GetHospitalByIdUseCase;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital.RegisterHospitalUseCase;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital.UpdateHospitalUseCase;

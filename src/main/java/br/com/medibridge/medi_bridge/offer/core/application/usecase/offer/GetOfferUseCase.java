@@ -1,11 +1,11 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.offer.output.OfferOutput;
-import br.com.medibridge.medi_bridge.offer.core.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ForbiddenException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.NotFoundException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class GetOfferUseCase {
 
     private final OfferRepositoryGateway offerRepositoryGateway;
 
-    public OfferOutput execute(AuthenticatedUser currentUser, UUID offerId) {
+    public OfferResponse execute(AuthenticatedUser currentUser, UUID offerId) {
         log.info("Executing GetOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -33,6 +33,6 @@ public class GetOfferUseCase {
         Offer offer = offerRepositoryGateway.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
 
-        return OfferOutput.from(offer);
+        return OfferResponse.from(offer);
     }
 }

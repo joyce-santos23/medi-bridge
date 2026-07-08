@@ -1,8 +1,8 @@
 package br.com.medibridge.medi_bridge.auth.infra.security;
 
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.TokenService;
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;

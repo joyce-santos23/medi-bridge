@@ -1,12 +1,12 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.offer.output.OfferOutput;
-import br.com.medibridge.medi_bridge.offer.core.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ForbiddenException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.NotFoundException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ReserveOfferUseCase {
     private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferOutput execute(AuthenticatedUser currentUser, UUID offerId) {
+    public OfferResponse execute(AuthenticatedUser currentUser, UUID offerId) {
         log.info("Executing ReserveOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -39,10 +39,9 @@ public class ReserveOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.getDomainEvents());
-        savedOffer.pullDomainEvents();
+        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
 
         log.info("Successfully reserved offer with ID: {}", savedOffer.getId());
-        return OfferOutput.from(savedOffer);
+        return OfferResponse.from(savedOffer);
     }
 }

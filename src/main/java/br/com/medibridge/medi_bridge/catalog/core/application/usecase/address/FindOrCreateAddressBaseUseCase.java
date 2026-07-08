@@ -4,7 +4,7 @@ import br.com.medibridge.medi_bridge.catalog.core.application.dto.address.output
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.ViaCepGateway;
 import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

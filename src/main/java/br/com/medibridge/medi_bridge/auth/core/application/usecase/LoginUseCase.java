@@ -6,8 +6,8 @@ import br.com.medibridge.medi_bridge.auth.core.application.port.security.Passwor
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.TokenService;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

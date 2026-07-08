@@ -4,10 +4,10 @@ import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.outpu
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
 import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.NotFoundException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
 import java.util.UUID;
 
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;

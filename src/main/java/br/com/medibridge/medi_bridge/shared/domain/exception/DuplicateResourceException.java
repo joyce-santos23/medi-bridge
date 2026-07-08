@@ -1,6 +1,4 @@
-package br.com.medibridge.medi_bridge.catalog.core.domain.exception;
-
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.DomainException;
+package br.com.medibridge.medi_bridge.shared.domain.exception;
 
 public class DuplicateResourceException extends DomainException {
 

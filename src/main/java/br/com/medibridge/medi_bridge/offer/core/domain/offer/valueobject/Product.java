@@ -2,7 +2,7 @@ package br.com.medibridge.medi_bridge.offer.core.domain.offer.valueobject;
 
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.enums.Category;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.enums.Unit;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import java.time.LocalDate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

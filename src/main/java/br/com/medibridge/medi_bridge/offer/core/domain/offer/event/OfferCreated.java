@@ -1,14 +1,14 @@
 package br.com.medibridge.medi_bridge.offer.core.domain.offer.event;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record OfferCreated(
         UUID offerId,
         UUID hospitalId,
-        LocalDateTime occurredOn
+        Instant occurredOn
 ) implements DomainEvent {
     public OfferCreated(UUID offerId, UUID hospitalId) {
-        this(offerId, hospitalId, LocalDateTime.now());
+        this(offerId, hospitalId, Instant.now());
     }
 }

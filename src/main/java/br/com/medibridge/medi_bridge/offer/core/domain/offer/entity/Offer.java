@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.offer.core.domain.offer.entity;
 
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.enums.OfferStatus;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.event.*;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.valueobject.Product;

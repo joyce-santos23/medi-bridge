@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity;
 
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.enums.HospitalStatus;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;

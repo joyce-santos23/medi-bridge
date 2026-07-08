@@ -1,4 +1,4 @@
-package br.com.medibridge.medi_bridge.catalog.infra.web.handler;
+package br.com.medibridge.medi_bridge.shared.infra.web.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

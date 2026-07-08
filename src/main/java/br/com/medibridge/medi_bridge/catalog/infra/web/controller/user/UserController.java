@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.infra.web.controller.user;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.user.CreateUserUseCase;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.user.GetAllUsersUseCase;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.user.GetUserByIdUseCase;

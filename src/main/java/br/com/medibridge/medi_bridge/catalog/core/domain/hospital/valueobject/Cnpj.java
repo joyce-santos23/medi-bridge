@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject;
 
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

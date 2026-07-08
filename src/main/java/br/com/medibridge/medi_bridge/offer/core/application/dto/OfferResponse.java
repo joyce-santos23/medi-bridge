@@ -1,28 +1,28 @@
-package br.com.medibridge.medi_bridge.offer.core.application.dto.offer.output;
+package br.com.medibridge.medi_bridge.offer.core.application.dto;
 
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.enums.OfferStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record OfferOutput(
+public record OfferResponse(
         UUID id,
         UUID hospitalId,
         UUID createdByUserId,
-        ProductOutput product,
+        ProductResponse product,
         OfferStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
-    public static OfferOutput from(Offer offer) {
+    public static OfferResponse from(Offer offer) {
         if (offer == null) {
             return null;
         }
-        return new OfferOutput(
+        return new OfferResponse(
                 offer.getId(),
                 offer.getHospitalId(),
                 offer.getCreatedByUserId(),
-                ProductOutput.from(offer.getProduct()),
+                ProductResponse.from(offer.getProduct()),
                 offer.getStatus(),
                 offer.getCreatedAt(),
                 offer.getUpdatedAt()

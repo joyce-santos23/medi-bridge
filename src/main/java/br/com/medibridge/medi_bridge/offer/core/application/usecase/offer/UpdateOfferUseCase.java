@@ -1,13 +1,13 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.offer.input.UpdateOfferInput;
-import br.com.medibridge.medi_bridge.offer.core.application.dto.offer.output.OfferOutput;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.UpdateOfferRequest;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
-import br.com.medibridge.medi_bridge.offer.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ForbiddenException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.NotFoundException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.valueobject.Product;
 import lombok.RequiredArgsConstructor;
@@ -22,43 +22,43 @@ public class UpdateOfferUseCase {
     private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferOutput execute(AuthenticatedUser currentUser, UpdateOfferInput input) {
-        log.info("Executing UpdateOfferUseCase for offer ID: {} by user ID: {}", input != null ? input.id() : "null", currentUser != null ? currentUser.id() : "anonymous");
+    public OfferResponse execute(AuthenticatedUser currentUser, UpdateOfferRequest request) {
+        log.info("Executing UpdateOfferUseCase for offer ID: {} by user ID: {}", request != null ? request.id() : "null", currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
         }
 
-        if (input == null || input.id() == null || input.product() == null) {
+        if (request == null || request.id() == null || request.product() == null) {
             throw new ValidationException("Offer ID and product data are required");
         }
 
-        Offer offer = offerRepositoryGateway.findById(input.id())
+        Offer offer = offerRepositoryGateway.findById(request.id())
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
 
         if (!offer.getHospitalId().equals(currentUser.hospitalId())) {
             throw new ForbiddenException("You can only update offers belonging to your hospital");
         }
 
+        UpdateOfferRequest.ProductRequest prodReq = request.product();
         Product newProduct = new Product(
-                input.product().name(),
-                input.product().category(),
-                input.product().manufacturer(),
-                input.product().batch(),
-                input.product().expirationDate(),
-                input.product().quantity(),
-                input.product().unit(),
-                input.product().observations()
+                prodReq.name(),
+                prodReq.category(),
+                prodReq.manufacturer(),
+                prodReq.batch(),
+                prodReq.expirationDate(),
+                prodReq.quantity(),
+                prodReq.unit(),
+                prodReq.observations()
         );
 
         offer.update(newProduct);
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.getDomainEvents());
-        savedOffer.pullDomainEvents();
+        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
 
         log.info("Successfully updated offer with ID: {}", savedOffer.getId());
-        return OfferOutput.from(savedOffer);
+        return OfferResponse.from(savedOffer);
     }
 }

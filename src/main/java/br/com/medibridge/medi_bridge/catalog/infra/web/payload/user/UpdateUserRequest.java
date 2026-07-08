@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.infra.web.payload.user;
 
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
 import br.com.medibridge.medi_bridge.catalog.infra.web.payload.enums.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

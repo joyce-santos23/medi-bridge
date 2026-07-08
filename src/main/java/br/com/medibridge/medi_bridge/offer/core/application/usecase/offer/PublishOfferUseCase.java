@@ -1,13 +1,13 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.offer.input.PublishOfferInput;
-import br.com.medibridge.medi_bridge.offer.core.application.dto.offer.output.OfferOutput;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.PublishOfferRequest;
 import br.com.medibridge.medi_bridge.offer.core.application.port.CatalogGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
-import br.com.medibridge.medi_bridge.offer.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ForbiddenException;
-import br.com.medibridge.medi_bridge.offer.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.valueobject.Product;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class PublishOfferUseCase {
     private final EventPublisherGateway eventPublisherGateway;
     private final CatalogGateway catalogGateway;
 
-    public OfferOutput execute(AuthenticatedUser currentUser, PublishOfferInput input) {
+    public OfferResponse execute(AuthenticatedUser currentUser, PublishOfferRequest request) {
         log.info("Executing PublishOfferUseCase for user ID: {}", currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -34,23 +34,27 @@ public class PublishOfferUseCase {
             throw new ValidationException("User must be associated with a hospital to publish an offer");
         }
 
-        if (!catalogGateway.existsHospitalById(currentUser.hospitalId())) {
-            throw new ValidationException("Associated hospital does not exist in catalog");
+        CatalogGateway.HospitalSummary hospital = catalogGateway.findHospitalById(currentUser.hospitalId())
+                .orElseThrow(() -> new ValidationException("Associated hospital does not exist in catalog"));
+
+        if (!hospital.active()) {
+            throw new ValidationException("Associated hospital is not active");
         }
 
-        if (input == null || input.product() == null) {
+        if (request == null || request.product() == null) {
             throw new ValidationException("Product data is required to publish an offer");
         }
 
+        PublishOfferRequest.ProductRequest prodReq = request.product();
         Product product = new Product(
-                input.product().name(),
-                input.product().category(),
-                input.product().manufacturer(),
-                input.product().batch(),
-                input.product().expirationDate(),
-                input.product().quantity(),
-                input.product().unit(),
-                input.product().observations()
+                prodReq.name(),
+                prodReq.category(),
+                prodReq.manufacturer(),
+                prodReq.batch(),
+                prodReq.expirationDate(),
+                prodReq.quantity(),
+                prodReq.unit(),
+                prodReq.observations()
         );
 
         Offer offer = Offer.publish(
@@ -61,10 +65,9 @@ public class PublishOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.getDomainEvents());
-        savedOffer.pullDomainEvents();
+        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
 
         log.info("Successfully published offer with ID: {}", savedOffer.getId());
-        return OfferOutput.from(savedOffer);
+        return OfferResponse.from(savedOffer);
     }
 }
