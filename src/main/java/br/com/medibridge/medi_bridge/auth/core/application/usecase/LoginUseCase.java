@@ -6,8 +6,8 @@ import br.com.medibridge.medi_bridge.auth.core.application.port.security.Passwor
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.TokenService;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,11 @@ public class LoginUseCase {
                     log.warn("Login failed: email {} not found", input.email());
                     return new ValidationException("Invalid email or password");
                 });
+
+        if (user.getStatus() != br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.UserStatus.ACTIVE) {
+            log.warn("Login failed: user {} is inactive", input.email());
+            throw new ValidationException("User account is inactive");
+        }
 
         if (!passwordEncoder.matches(input.password(), user.getPasswordHash())) {
             log.warn("Login failed: incorrect password for email {}", input.email());

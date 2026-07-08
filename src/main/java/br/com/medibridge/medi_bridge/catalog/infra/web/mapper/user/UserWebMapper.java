@@ -4,7 +4,7 @@ import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.Cre
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.UpdateUserInput;
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.ProfessionalCouncil;
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.UserStatus;
 import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.RegisterUserRequest;
 import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.UpdateUserRequest;

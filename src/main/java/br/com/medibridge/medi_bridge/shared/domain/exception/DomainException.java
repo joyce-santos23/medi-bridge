@@ -1,4 +1,4 @@
-package br.com.medibridge.medi_bridge.catalog.core.domain.exception;
+package br.com.medibridge.medi_bridge.shared.domain.exception;
 
 public class DomainException extends RuntimeException {
 

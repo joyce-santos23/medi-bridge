@@ -2,8 +2,8 @@ package br.com.medibridge.medi_bridge.catalog.core.application.usecase.user;
 
 import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
-import br.com.medibridge.medi_bridge.catalog.core.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

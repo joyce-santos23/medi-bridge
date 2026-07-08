@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output;
 
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.ProfessionalCouncil;
-import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.Role;
+import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.UserStatus;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.entity.User;
 import java.util.UUID;

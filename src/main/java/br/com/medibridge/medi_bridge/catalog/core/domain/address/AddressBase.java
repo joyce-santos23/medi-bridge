@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.domain.address;
 
-import br.com.medibridge.medi_bridge.catalog.core.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
