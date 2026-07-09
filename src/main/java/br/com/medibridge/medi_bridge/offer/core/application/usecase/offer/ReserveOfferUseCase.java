@@ -1,10 +1,8 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
 import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
-import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
-import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
@@ -21,12 +19,8 @@ public class ReserveOfferUseCase {
     private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferResponse execute(AuthenticatedUser currentUser, UUID offerId) {
-        log.info("Executing ReserveOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
-
-        if (currentUser == null) {
-            throw new ForbiddenException("Authentication required");
-        }
+    public OfferResponse execute(UUID offerId) {
+        log.info("Executing ReserveOfferUseCase for offer ID: {}", offerId);
 
         if (offerId == null) {
             throw new ValidationException("Offer ID is required");
