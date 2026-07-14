@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.user;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.CreateUserInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.CreateUserInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
@@ -26,7 +26,7 @@ public class CreateUserUseCase {
     private final UserGateway userGateway;
     private final PasswordEncoder passwordEncoder;
 
-    public UserOutput execute(AuthenticatedUser currentUser, CreateUserInput input) {
+    public UserOutputDTO execute(AuthenticatedUser currentUser, CreateUserInputDTO input) {
         log.info("Executing CreateUserUseCase for email: {} and hospital ID: {} by user: {}", input.email(), input.hospitalId(), currentUser != null ? currentUser.id() : "anonymous");
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
@@ -65,6 +65,6 @@ public class CreateUserUseCase {
 
         User savedUser = userGateway.save(user);
         log.info("Successfully created user with ID: {} and role: {} for hospital ID: {}", savedUser.getId(), savedUser.getRole(), hospital.getId());
-        return UserOutput.from(savedUser);
+        return UserOutputDTO.from(savedUser);
     }
 }

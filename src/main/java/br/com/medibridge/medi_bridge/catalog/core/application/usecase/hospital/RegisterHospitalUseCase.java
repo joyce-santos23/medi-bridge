@@ -1,10 +1,10 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital;
 
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.address.FindOrCreateAddressBaseUseCase;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.RegisterHospitalInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.RegisterHospitalOutput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.RegisterHospitalInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.RegisterHospitalOutputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
@@ -17,7 +17,6 @@ import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cn
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -31,7 +30,7 @@ public class RegisterHospitalUseCase {
     private final FindOrCreateAddressBaseUseCase findOrCreateAddressBaseUseCase;
 
     @Transactional
-    public RegisterHospitalOutput execute(RegisterHospitalInput input) {
+    public RegisterHospitalOutputDTO execute(RegisterHospitalInputDTO input) {
         log.info("Executing RegisterHospitalUseCase for hospital name: {}", input.name());
         Cnpj cnpj = Cnpj.of(input.cnpj());
         validateUniqueHospital(cnpj, input.cnes());
@@ -65,9 +64,9 @@ public class RegisterHospitalUseCase {
         User savedAdminUser = userGateway.save(adminUser);
         log.info("Hospital admin user saved with ID: {} for hospital ID: {}", savedAdminUser.getId(), savedHospital.getId());
 
-        return new RegisterHospitalOutput(
-                HospitalOutput.from(savedHospital, addressBase),
-                UserOutput.from(savedAdminUser)
+        return new RegisterHospitalOutputDTO(
+                HospitalOutputDTO.from(savedHospital, addressBase),
+                UserOutputDTO.from(savedAdminUser)
         );
     }
 

@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.user;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
@@ -16,7 +16,7 @@ public class GetAllUsersUseCase {
 
     private final UserGateway userGateway;
 
-    public List<UserOutput> execute(AuthenticatedUser currentUser) {
+    public List<UserOutputDTO> execute(AuthenticatedUser currentUser) {
         log.info("Executing GetAllUsersUseCase for hospital ID: {}", currentUser != null ? currentUser.hospitalId() : "anonymous");
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
@@ -24,7 +24,7 @@ public class GetAllUsersUseCase {
 
         return userGateway.findAllByHospitalId(currentUser.hospitalId())
                 .stream()
-                .map(UserOutput::from)
+                .map(UserOutputDTO::from)
                 .toList();
     }
 }

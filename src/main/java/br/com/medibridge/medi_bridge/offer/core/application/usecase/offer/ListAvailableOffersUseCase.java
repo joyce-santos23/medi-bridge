@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
@@ -16,7 +16,7 @@ public class ListAvailableOffersUseCase {
 
     private final OfferRepositoryGateway offerRepositoryGateway;
 
-    public List<OfferResponse> execute(AuthenticatedUser currentUser) {
+    public List<OfferResponseDTO> execute(AuthenticatedUser currentUser) {
         log.info("Executing ListAvailableOffersUseCase by user ID: {}", currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -24,7 +24,7 @@ public class ListAvailableOffersUseCase {
         }
 
         return offerRepositoryGateway.findAllAvailable().stream()
-                .map(OfferResponse::from)
+                .map(OfferResponseDTO::from)
                 .toList();
     }
 }

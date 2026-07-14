@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
@@ -19,7 +19,7 @@ public class GetOfferUseCase {
 
     private final OfferRepositoryGateway offerRepositoryGateway;
 
-    public OfferResponse execute(AuthenticatedUser currentUser, UUID offerId) {
+    public OfferResponseDTO execute(AuthenticatedUser currentUser, UUID offerId) {
         log.info("Executing GetOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -33,6 +33,6 @@ public class GetOfferUseCase {
         Offer offer = offerRepositoryGateway.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
 
-        return OfferResponse.from(offer);
+        return OfferResponseDTO.from(offer);
     }
 }

@@ -5,10 +5,10 @@ import br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital.G
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital.RegisterHospitalUseCase;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital.UpdateHospitalUseCase;
 import br.com.medibridge.medi_bridge.catalog.infra.web.mapper.hospital.HospitalWebMapper;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.HospitalResponse;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalRequest;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalResponse;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.UpdateHospitalRequest;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.HospitalResponsePayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalRequestPayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalResponsePayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.UpdateHospitalRequestPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +30,8 @@ public class HospitalController {
     private final GetHospitalByIdUseCase getHospitalByIdUseCase;
 
     @PostMapping
-    public ResponseEntity<RegisterHospitalResponse> register(
-            @Valid @RequestBody RegisterHospitalRequest request
+    public ResponseEntity<RegisterHospitalResponsePayload> register(
+            @Valid @RequestBody RegisterHospitalRequestPayload request
     ) {
         log.info("Request to register hospital with CNPJ: {}", request.cnpj());
         var input = HospitalWebMapper.toInput(request);
@@ -42,9 +42,9 @@ public class HospitalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HospitalResponse> update(
+    public ResponseEntity<HospitalResponsePayload> update(
             @PathVariable("id") UUID id,
-            @Valid @RequestBody UpdateHospitalRequest request,
+            @Valid @RequestBody UpdateHospitalRequestPayload request,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
         log.info("Request to update hospital ID: {}", id);
@@ -56,7 +56,7 @@ public class HospitalController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HospitalResponse> getById(
+    public ResponseEntity<HospitalResponsePayload> getById(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {

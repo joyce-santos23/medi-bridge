@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
 import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
@@ -19,7 +19,7 @@ public class ReopenOfferUseCase {
     private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferResponse execute(UUID offerId) {
+    public OfferResponseDTO execute(UUID offerId) {
         log.info("Executing ReopenOfferUseCase for offer ID: {}", offerId);
 
 
@@ -37,6 +37,6 @@ public class ReopenOfferUseCase {
         eventPublisherGateway.publish(savedOffer.pullDomainEvents());
 
         log.info("Successfully reopened offer with ID: {} resulting in status: {}", savedOffer.getId(), savedOffer.getStatus());
-        return OfferResponse.from(savedOffer);
+        return OfferResponseDTO.from(savedOffer);
     }
 }

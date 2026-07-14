@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
 import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
@@ -19,7 +19,7 @@ public class ReserveOfferUseCase {
     private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferResponse execute(UUID offerId) {
+    public OfferResponseDTO execute(UUID offerId) {
         log.info("Executing ReserveOfferUseCase for offer ID: {}", offerId);
 
         if (offerId == null) {
@@ -36,6 +36,6 @@ public class ReserveOfferUseCase {
         eventPublisherGateway.publish(savedOffer.pullDomainEvents());
 
         log.info("Successfully reserved offer with ID: {}", savedOffer.getId());
-        return OfferResponse.from(savedOffer);
+        return OfferResponseDTO.from(savedOffer);
     }
 }

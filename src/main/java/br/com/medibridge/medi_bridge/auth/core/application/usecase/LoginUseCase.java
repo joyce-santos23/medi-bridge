@@ -1,10 +1,10 @@
 package br.com.medibridge.medi_bridge.auth.core.application.usecase;
 
-import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.input.LoginInput;
-import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.output.LoginOutput;
+import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.input.LoginInputDTO;
+import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.output.LoginOutputDTO;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.TokenService;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
@@ -22,7 +22,7 @@ public class LoginUseCase {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
-    public LoginOutput execute(LoginInput input) {
+    public LoginOutputDTO execute(LoginInputDTO input) {
         log.info("Attempting login for email: {}", input.email());
 
         User user = userGateway.findByEmail(input.email())
@@ -50,6 +50,6 @@ public class LoginUseCase {
         String token = tokenService.generateToken(authenticatedUser);
         log.info("Login successful for email: {}, generated token", input.email());
 
-        return new LoginOutput(token, UserOutput.from(user));
+        return new LoginOutputDTO(token, UserOutputDTO.from(user));
     }
 }

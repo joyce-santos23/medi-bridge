@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.user;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.enums.Role;
@@ -19,7 +19,7 @@ public class GetUserByIdUseCase {
 
     private final UserGateway userGateway;
 
-    public UserOutput execute(AuthenticatedUser currentUser, UUID id) {
+    public UserOutputDTO execute(AuthenticatedUser currentUser, UUID id) {
         log.info("Executing GetUserByIdUseCase for user ID: {} by requester ID: {}", id, currentUser != null ? currentUser.id() : "anonymous");
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
@@ -38,6 +38,6 @@ public class GetUserByIdUseCase {
         }
 
         log.info("Successfully retrieved user details for user ID: {}", id);
-        return UserOutput.from(user);
+        return UserOutputDTO.from(user);
     }
 }
