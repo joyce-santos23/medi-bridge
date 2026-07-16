@@ -49,7 +49,6 @@ public class OfferController {
         var input = OfferWebMapper.toDTO(request);
         var output = publishOfferUseCase.execute(currentUser, input);
         var response = OfferWebMapper.toResponse(output);
-        log.info("Offer successfully published with ID: {}", response.id());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -63,7 +62,6 @@ public class OfferController {
         var input = OfferWebMapper.toDTO(id, request);
         var output = updateOfferUseCase.execute(currentUser, input);
         var response = OfferWebMapper.toResponse(output);
-        log.info("Offer successfully updated with ID: {}", response.id());
         return ResponseEntity.ok(response);
     }
 
@@ -75,7 +73,6 @@ public class OfferController {
         log.info("Request to cancel offer with ID: {}", id);
         var output = cancelOfferUseCase.execute(currentUser, id);
         var response = OfferWebMapper.toResponse(output);
-        log.info("Offer successfully cancelled with ID: {}", response.id());
         return ResponseEntity.ok(response);
     }
 
@@ -87,7 +84,6 @@ public class OfferController {
         log.info("Request to retrieve offer details for ID: {}", id);
         var output = getOfferUseCase.execute(currentUser, id);
         var response = OfferWebMapper.toResponse(output);
-        log.info("Offer details retrieved successfully for ID: {}", id);
         return ResponseEntity.ok(response);
     }
 

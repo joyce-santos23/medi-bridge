@@ -1,10 +1,8 @@
-package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
+package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer.integration;
 
 import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
-import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
-import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
 import br.com.medibridge.medi_bridge.offer.core.domain.offer.entity.Offer;
@@ -13,39 +11,38 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Internal use case.
+ *
+ * Used exclusively by the Transfer module to reserve an Offer.
+ */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CancelOfferUseCase {
+public class ReopenOfferUseCase {
 
-    private final OfferRepositoryGateway offerGateway;
+    private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferResponseDTO execute(AuthenticatedUser currentUser, UUID offerId) {
-        log.info("Executing CancelOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
+    public OfferResponseDTO execute(UUID offerId) {
+        log.info("Executing ReopenOfferUseCase for offer ID: {}", offerId);
 
-        if (currentUser == null) {
-            throw new ForbiddenException("Authentication required");
-        }
 
         if (offerId == null) {
             throw new ValidationException("Offer ID is required");
         }
 
-        Offer offer = offerGateway.findById(offerId)
+        Offer offer = offerRepositoryGateway.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
 
-        if (!offer.getHospitalId().equals(currentUser.hospitalId())) {
-            throw new ForbiddenException("You can only cancel offers belonging to your hospital");
-        }
+        offer.makeAvailableAgain();
 
-        offer.cancel();
-
-        Offer savedOffer = offerGateway.save(offer);
+        Offer savedOffer = offerRepositoryGateway.save(offer);
 
         eventPublisherGateway.publish(savedOffer.pullDomainEvents());
 
-        log.info("Successfully cancelled offer with ID: {}", savedOffer.getId());
+        log.info("Successfully reopened offer with ID: {} resulting in status: {}", savedOffer.getId(), savedOffer.getStatus());
         return OfferResponseDTO.from(savedOffer);
     }
 }
