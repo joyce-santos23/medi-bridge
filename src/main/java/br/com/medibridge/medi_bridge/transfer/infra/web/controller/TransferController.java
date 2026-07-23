@@ -25,12 +25,12 @@ public class TransferController {
 
     private final CreateTransferUseCase createTransferUseCase;
     private final ListTransfersUseCase listTransfersUseCase;
+    private final ListPendingApprovalTransfersUseCase listPendingApprovalTransfersUseCase;
     private final GetTransferUseCase getTransferUseCase;
     private final ApproveTransferUseCase approveTransferUseCase;
     private final RejectTransferUseCase rejectTransferUseCase;
     private final CancelTransferUseCase cancelTransferUseCase;
     private final CompleteTransferUseCase completeTransferUseCase;
-    private final ExpireTransfersUseCase expireTransfersUseCase;
 
     @PostMapping
     public ResponseEntity<TransferResponsePayload> create(
@@ -49,6 +49,18 @@ public class TransferController {
     ) {
         log.info("Request to list transfers for hospital");
         var results = listTransfersUseCase.execute(currentUser);
+        var response = results.stream()
+                .map(TransferWebMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/pending-approval")
+    public ResponseEntity<List<TransferSummaryResponsePayload>> listPendingApproval(
+            @AuthenticationPrincipal AuthenticatedUser currentUser
+    ) {
+        log.info("Request to list pending approval transfers for hospital");
+        var results = listPendingApprovalTransfersUseCase.execute(currentUser);
         var response = results.stream()
                 .map(TransferWebMapper::toResponse)
                 .toList();
@@ -109,12 +121,5 @@ public class TransferController {
         var dto = TransferWebMapper.toDTO(payload);
         var result = completeTransferUseCase.execute(currentUser, id, dto);
         return ResponseEntity.ok(TransferWebMapper.toResponse(result));
-    }
-
-    @PostMapping("/expire")
-    public ResponseEntity<Integer> expire() {
-        log.info("Request to execute transfers expiration process");
-        int count = expireTransfersUseCase.execute();
-        return ResponseEntity.ok(count);
     }
 }

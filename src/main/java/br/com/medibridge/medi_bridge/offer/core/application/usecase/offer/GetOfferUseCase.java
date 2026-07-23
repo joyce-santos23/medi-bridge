@@ -1,8 +1,10 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
 import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.integration.HospitalSummary;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.integration.UserSummary;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
-import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
+import br.com.medibridge.medi_bridge.offer.core.application.port.*;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.NotFoundException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class GetOfferUseCase {
 
     private final OfferRepositoryGateway offerRepositoryGateway;
+    private final CatalogGateway catalogGateway;
 
     public OfferResponseDTO execute(AuthenticatedUser currentUser, UUID offerId) {
         log.info("Executing GetOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
@@ -33,6 +36,9 @@ public class GetOfferUseCase {
         Offer offer = offerRepositoryGateway.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
 
-        return OfferResponseDTO.from(offer);
+        HospitalSummary hospital = catalogGateway.findHospitalById(offer.getHospitalId()).orElse(null);
+        UserSummary creator = catalogGateway.findUserById(offer.getCreatedByUserId()).orElse(null);
+
+        return OfferResponseDTO.from(offer, hospital, creator);
     }
 }

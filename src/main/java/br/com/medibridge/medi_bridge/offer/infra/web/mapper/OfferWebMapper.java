@@ -5,8 +5,7 @@ import br.com.medibridge.medi_bridge.offer.core.application.dto.PublishOfferRequ
 import br.com.medibridge.medi_bridge.offer.core.application.dto.UpdateOfferRequestDTO;
 import br.com.medibridge.medi_bridge.offer.infra.web.payload.request.PublishOfferRequestPayload;
 import br.com.medibridge.medi_bridge.offer.infra.web.payload.request.UpdateOfferRequestPayload;
-import br.com.medibridge.medi_bridge.offer.infra.web.payload.response.OfferResponsePayload;
-import br.com.medibridge.medi_bridge.offer.infra.web.payload.response.ProductResponsePayload;
+import br.com.medibridge.medi_bridge.offer.infra.web.payload.response.*;
 
 import java.util.UUID;
 
@@ -72,12 +71,43 @@ public final class OfferWebMapper {
                 prod.observations()
         ) : null;
 
+        var hosp = dto.hospital();
+        HospitalSummaryResponsePayload hospResponse = null;
+        if (hosp != null) {
+            var addr = hosp.address();
+            var addrPayload = addr != null ? new HospitalAddressResponsePayload(
+                    addr.zipCode(),
+                    addr.street(),
+                    addr.neighborhood(),
+                    addr.city(),
+                    addr.state(),
+                    addr.number(),
+                    addr.complement()
+            ) : null;
+
+            hospResponse = new HospitalSummaryResponsePayload(
+                    hosp.id(),
+                    hosp.name(),
+                    hosp.email(),
+                    hosp.phone(),
+                    addrPayload
+            );
+        }
+
+        var creator = dto.createdBy();
+        var creatorResponse = creator != null ? new UserSummaryResponsePayload(
+                creator.id(),
+                creator.name(),
+                creator.professionalCouncil(),
+                creator.professionalRegistration()
+        ) : null;
+
         return new OfferResponsePayload(
                 dto.id(),
-                dto.hospitalId(),
-                dto.createdByUserId(),
-                prodResponse,
                 dto.status(),
+                prodResponse,
+                hospResponse,
+                creatorResponse,
                 dto.createdAt(),
                 dto.updatedAt()
         );

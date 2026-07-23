@@ -1,6 +1,7 @@
 package br.com.medibridge.medi_bridge.transfer.core.application.port;
 
-import java.time.LocalDate;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.OfferSummary;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,12 +10,4 @@ public interface OfferGateway {
     void reserve(UUID offerId);
     void release(UUID offerId);
     void complete(UUID offerId);
-
-    record OfferSummary(
-            UUID id,
-            UUID hospitalId,
-            UUID createdByUserId,
-            String status,
-            LocalDate expirationDate
-    ) {}
 }

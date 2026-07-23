@@ -4,6 +4,8 @@ import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepository
 import br.com.medibridge.medi_bridge.offer.core.application.usecase.offer.integration.CompleteOfferUseCase;
 import br.com.medibridge.medi_bridge.offer.core.application.usecase.offer.integration.ReopenOfferUseCase;
 import br.com.medibridge.medi_bridge.offer.core.application.usecase.offer.integration.ReserveOfferUseCase;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.OfferSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.ProductSummary;
 import br.com.medibridge.medi_bridge.transfer.core.application.port.OfferGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,13 +25,24 @@ public class OfferAdapter implements OfferGateway {
     @Override
     public Optional<OfferSummary> findById(UUID offerId) {
         return offerRepositoryGateway.findById(offerId)
-                .map(offer -> new OfferSummary(
-                        offer.getId(),
-                        offer.getHospitalId(),
-                        offer.getCreatedByUserId(),
-                        offer.getStatus().name(),
-                        offer.getProduct().getExpirationDate()
-                ));
+                .map(offer -> {
+                    ProductSummary productSummary = new ProductSummary(
+                            offer.getProduct().getName(),
+                            offer.getProduct().getCategory().name(),
+                            offer.getProduct().getManufacturer(),
+                            offer.getProduct().getBatch(),
+                            offer.getProduct().getExpirationDate(),
+                            offer.getProduct().getQuantity(),
+                            offer.getProduct().getUnit().name(),
+                            offer.getProduct().getObservations()
+                    );
+
+                    return new OfferSummary(
+                            offer.getId(),
+                            offer.getHospitalId(),
+                            productSummary
+                    );
+                });
     }
 
     @Override

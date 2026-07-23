@@ -2,11 +2,12 @@ package br.com.medibridge.medi_bridge.transfer.core.application.usecase;
 
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.HospitalSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.OfferSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.UserSummary;
 import br.com.medibridge.medi_bridge.transfer.core.application.dto.request.CompleteTransferRequestDTO;
 import br.com.medibridge.medi_bridge.transfer.core.application.dto.response.TransferResponseDTO;
-import br.com.medibridge.medi_bridge.transfer.core.application.port.DomainEventPublisherGateway;
-import br.com.medibridge.medi_bridge.transfer.core.application.port.OfferGateway;
-import br.com.medibridge.medi_bridge.transfer.core.application.port.TransferGateway;
+import br.com.medibridge.medi_bridge.transfer.core.application.port.*;
 import br.com.medibridge.medi_bridge.transfer.core.domain.exception.TransferNotFoundException;
 import br.com.medibridge.medi_bridge.transfer.core.domain.entity.Transfer;
 import br.com.medibridge.medi_bridge.transfer.core.domain.exception.TransferValidationException;
@@ -25,6 +26,7 @@ public class CompleteTransferUseCase {
     private final TransferGateway transferGateway;
     private final OfferGateway offerGateway;
     private final DomainEventPublisherGateway domainEventPublisherGateway;
+    private final CatalogGateway catalogGateway;
 
     public TransferResponseDTO execute(AuthenticatedUser currentUser, UUID transferId, CompleteTransferRequestDTO request) {
         log.info("Executing CompleteTransferUseCase for transfer ID: {} by user: {}", transferId, currentUser != null ? currentUser.id() : "anonymous");
@@ -52,11 +54,17 @@ public class CompleteTransferUseCase {
 
         offerGateway.complete(transfer.getOfferId());
 
-        transferGateway.save(transfer);
+        Transfer savedTransfer = transferGateway.save(transfer);
 
         domainEventPublisherGateway.publish(transfer.pullDomainEvents());
 
-        log.info("Successfully completed transfer request with ID: {}", transfer.getId());
-        return TransferResponseDTO.from(transfer);
+        log.info("Successfully completed transfer request with ID: {}", savedTransfer.getId());
+
+        HospitalSummary sourceHospital = catalogGateway.findHospitalById(savedTransfer.getSourceHospitalId()).orElse(null);
+        HospitalSummary destinationHospital = catalogGateway.findHospitalById(savedTransfer.getDestinationHospitalId()).orElse(null);
+        UserSummary requester = catalogGateway.findUserById(savedTransfer.getRequesterUserId()).orElse(null);
+        OfferSummary offer = offerGateway.findById(savedTransfer.getOfferId()).orElse(null);
+
+        return TransferResponseDTO.from(savedTransfer, false, sourceHospital, destinationHospital, requester, offer);
     }
 }

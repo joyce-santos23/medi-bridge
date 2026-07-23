@@ -2,9 +2,11 @@ package br.com.medibridge.medi_bridge.transfer.core.application.usecase;
 
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.HospitalSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.OfferSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.UserSummary;
 import br.com.medibridge.medi_bridge.transfer.core.application.dto.response.TransferResponseDTO;
-import br.com.medibridge.medi_bridge.transfer.core.application.port.DomainEventPublisherGateway;
-import br.com.medibridge.medi_bridge.transfer.core.application.port.TransferGateway;
+import br.com.medibridge.medi_bridge.transfer.core.application.port.*;
 import br.com.medibridge.medi_bridge.transfer.core.domain.exception.TransferNotFoundException;
 import br.com.medibridge.medi_bridge.transfer.core.domain.entity.Transfer;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ public class ApproveTransferUseCase {
 
     private final TransferGateway transferGateway;
     private final DomainEventPublisherGateway domainEventPublisherGateway;
+    private final CatalogGateway catalogGateway;
+    private final OfferGateway offerGateway;
 
     public TransferResponseDTO execute(AuthenticatedUser currentUser, UUID transferId) {
         log.info("Executing ApproveTransferUseCase for transfer ID: {} by user: {}", transferId, currentUser != null ? currentUser.id() : "anonymous");
@@ -47,6 +51,11 @@ public class ApproveTransferUseCase {
                 transfer.pullDomainEvents()
         );
 
-        return TransferResponseDTO.from(transfer, true);
+        HospitalSummary sourceHospital = catalogGateway.findHospitalById(transfer.getSourceHospitalId()).orElse(null);
+        HospitalSummary destinationHospital = catalogGateway.findHospitalById(transfer.getDestinationHospitalId()).orElse(null);
+        UserSummary requester = catalogGateway.findUserById(transfer.getRequesterUserId()).orElse(null);
+        OfferSummary offer = offerGateway.findById(transfer.getOfferId()).orElse(null);
+
+        return TransferResponseDTO.from(transfer, true, sourceHospital, destinationHospital, requester, offer);
     }
 }

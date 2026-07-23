@@ -241,7 +241,7 @@ public class Transfer {
     }
 
     public boolean isExpired(Instant now) {
-        return now.isAfter(expiresAt);
+        return expiresAt != null && now.isAfter(expiresAt);
     }
 
     // ==========================================================

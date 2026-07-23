@@ -43,7 +43,7 @@ public class CancelOfferUseCase {
 
         Offer savedOffer = offerGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully cancelled offer with ID: {}", savedOffer.getId());
         return OfferResponseDTO.from(savedOffer);

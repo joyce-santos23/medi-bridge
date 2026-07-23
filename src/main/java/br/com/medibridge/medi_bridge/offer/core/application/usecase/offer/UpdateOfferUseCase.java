@@ -56,7 +56,7 @@ public class UpdateOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully updated offer with ID: {}", savedOffer.getId());
         return OfferResponseDTO.from(savedOffer);

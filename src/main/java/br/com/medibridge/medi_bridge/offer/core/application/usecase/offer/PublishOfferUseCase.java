@@ -2,9 +2,9 @@ package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
 import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
 import br.com.medibridge.medi_bridge.offer.core.application.dto.PublishOfferRequestDTO;
-import br.com.medibridge.medi_bridge.offer.core.application.port.CatalogGateway;
-import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
-import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.integration.HospitalSummary;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.integration.UserSummary;
+import br.com.medibridge.medi_bridge.offer.core.application.port.*;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
@@ -34,7 +34,7 @@ public class PublishOfferUseCase {
             throw new ValidationException("User must be associated with a hospital to publish an offer");
         }
 
-        CatalogGateway.HospitalSummary hospital = catalogGateway.findHospitalById(currentUser.hospitalId())
+        HospitalSummary hospital = catalogGateway.findHospitalById(currentUser.hospitalId())
                 .orElseThrow(() -> new ValidationException("Associated hospital does not exist in catalog"));
 
         if (!hospital.active()) {
@@ -65,9 +65,11 @@ public class PublishOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
+
+        UserSummary creator = catalogGateway.findUserById(currentUser.id()).orElse(null);
 
         log.info("Successfully published offer with ID: {}", savedOffer.getId());
-        return OfferResponseDTO.from(savedOffer);
+        return OfferResponseDTO.from(savedOffer, hospital, creator);
     }
 }

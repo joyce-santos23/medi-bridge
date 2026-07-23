@@ -40,7 +40,7 @@ public class ReserveOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully reserved offer with ID: {}", savedOffer.getId());
         return OfferResponseDTO.from(savedOffer);

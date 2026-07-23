@@ -3,6 +3,9 @@ package br.com.medibridge.medi_bridge.transfer.core.application.usecase;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ForbiddenException;
 import br.com.medibridge.medi_bridge.shared.domain.exception.ValidationException;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.HospitalSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.OfferSummary;
+import br.com.medibridge.medi_bridge.transfer.core.application.dto.integration.UserSummary;
 import br.com.medibridge.medi_bridge.transfer.core.application.dto.request.CreateTransferRequestDTO;
 import br.com.medibridge.medi_bridge.transfer.core.application.dto.response.TransferResponseDTO;
 import br.com.medibridge.medi_bridge.transfer.core.application.port.*;
@@ -37,7 +40,7 @@ public class CreateTransferUseCase {
         }
 
         // Validar hospital de destino
-        CatalogGateway.HospitalSummary destinationHospital = catalogGateway.findHospitalById(destinationHospitalId)
+        HospitalSummary destinationHospital = catalogGateway.findHospitalById(destinationHospitalId)
                 .orElseThrow(() -> new ValidationException("Destination hospital does not exist in catalog"));
 
         if (!destinationHospital.active()) {
@@ -49,7 +52,7 @@ public class CreateTransferUseCase {
         }
 
         // Buscar oferta e validar
-        OfferGateway.OfferSummary offer = offerGateway.findById(request.offerId())
+        OfferSummary offer = offerGateway.findById(request.offerId())
                 .orElseThrow(() -> new ValidationException("Offer not found"));
 
         UUID sourceHospitalId = offer.hospitalId();
@@ -68,10 +71,12 @@ public class CreateTransferUseCase {
 
         transferGateway.save(transfer);
 
-        domainEventPublisherGateway.publish(
-                transfer.pullDomainEvents()
-        );
+        domainEventPublisherGateway.publish(transfer.pullDomainEvents());
 
-        return TransferResponseDTO.from(transfer);
+        HospitalSummary sourceHospital = catalogGateway.findHospitalById(sourceHospitalId).orElse(null);
+        UserSummary requester = catalogGateway.findUserById(currentUser.id()).orElse(null);
+        OfferSummary offerSummary = offerGateway.findById(offer.id()).orElse(null);
+
+        return TransferResponseDTO.from(transfer, false, sourceHospital, destinationHospital, requester, offerSummary);
     }
 }

@@ -6,10 +6,10 @@ import java.util.UUID;
 
 public record OfferResponsePayload(
         UUID id,
-        UUID hospitalId,
-        UUID createdByUserId,
-        ProductResponsePayload product,
         OfferStatus status,
+        ProductResponsePayload product,
+        HospitalSummaryResponsePayload hospital,
+        UserSummaryResponsePayload createdBy,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

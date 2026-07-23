@@ -40,7 +40,7 @@ public class ReopenOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully reopened offer with ID: {} resulting in status: {}", savedOffer.getId(), savedOffer.getStatus());
         return OfferResponseDTO.from(savedOffer);

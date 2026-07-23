@@ -40,7 +40,7 @@ public class CompleteOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully completed offer with ID: {}", savedOffer.getId());
         return OfferResponseDTO.from(savedOffer);

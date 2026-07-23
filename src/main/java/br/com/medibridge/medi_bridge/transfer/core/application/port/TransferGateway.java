@@ -13,4 +13,5 @@ public interface TransferGateway {
     List<Transfer> findActiveTransfersBefore(Instant time);
     List<Transfer> findByHospital(UUID hospitalId);
     List<Transfer> findByOfferId(UUID offerId);
+    List<Transfer> findPendingApprovalsBySourceHospital(UUID sourceHospitalId);
 }

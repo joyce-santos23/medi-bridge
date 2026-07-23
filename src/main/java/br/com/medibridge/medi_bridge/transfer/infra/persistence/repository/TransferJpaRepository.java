@@ -17,4 +17,6 @@ public interface TransferJpaRepository extends JpaRepository<TransferEntity, UUI
     List<TransferEntity> findBySourceHospitalIdOrDestinationHospitalId(UUID sourceHospitalId, UUID destinationHospitalId);
 
     List<TransferEntity> findByOfferId(UUID offerId);
+
+    List<TransferEntity> findBySourceHospitalIdAndStatus(UUID sourceHospitalId, TransferStatus status);
 }

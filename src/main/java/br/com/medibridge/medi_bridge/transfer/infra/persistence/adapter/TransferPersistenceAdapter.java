@@ -63,4 +63,11 @@ public class TransferPersistenceAdapter implements TransferGateway {
                 .map(TransferPersistenceMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Transfer> findPendingApprovalsBySourceHospital(UUID sourceHospitalId) {
+        return repository.findBySourceHospitalIdAndStatus(sourceHospitalId, TransferStatus.PENDING_APPROVAL).stream()
+                .map(TransferPersistenceMapper::toDomain)
+                .toList();
+    }
 }

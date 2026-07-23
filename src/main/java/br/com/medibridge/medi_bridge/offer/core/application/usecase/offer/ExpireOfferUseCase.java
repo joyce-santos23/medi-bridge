@@ -34,7 +34,7 @@ public class ExpireOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully expired offer with ID: {}", savedOffer.getId());
         return OfferResponseDTO.from(savedOffer);
