@@ -1,9 +1,9 @@
 package br.com.medibridge.medi_bridge.catalog.infra.integration.viacep.adapter;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.address.output.ViaCepAddressOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.address.output.ViaCepAddressOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.ViaCepGateway;
 import br.com.medibridge.medi_bridge.catalog.infra.integration.viacep.mapper.ViaCepMapper;
-import br.com.medibridge.medi_bridge.catalog.infra.integration.viacep.payload.ViaCepResponse;
+import br.com.medibridge.medi_bridge.catalog.infra.integration.viacep.payload.ViaCepResponsePayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -17,16 +17,16 @@ public class ViaCepAdapter implements ViaCepGateway {
     private final ViaCepMapper viaCepMapper;
 
     @Override
-    public Optional<ViaCepAddressOutput> findByZipCode(String zipCode) {
+    public Optional<ViaCepAddressOutputDTO> findByZipCode(String zipCode) {
         if (zipCode == null || zipCode.isBlank()) {
             return Optional.empty();
         }
 
         try {
-            ViaCepResponse response = viaCepRestClient.get()
+            ViaCepResponsePayload response = viaCepRestClient.get()
                     .uri("/ws/{cep}/json", zipCode)
                     .retrieve()
-                    .body(ViaCepResponse.class);
+                    .body(ViaCepResponsePayload.class);
 
             if (response == null || Boolean.TRUE.equals(response.erro())) {
                 return Optional.empty();

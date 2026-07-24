@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
-import br.com.medibridge.medi_bridge.offer.core.application.dto.UpdateOfferRequest;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.UpdateOfferRequestDTO;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
@@ -22,7 +22,7 @@ public class UpdateOfferUseCase {
     private final OfferRepositoryGateway offerRepositoryGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferResponse execute(AuthenticatedUser currentUser, UpdateOfferRequest request) {
+    public OfferResponseDTO execute(AuthenticatedUser currentUser, UpdateOfferRequestDTO request) {
         log.info("Executing UpdateOfferUseCase for offer ID: {} by user ID: {}", request != null ? request.id() : "null", currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -40,7 +40,7 @@ public class UpdateOfferUseCase {
             throw new ForbiddenException("You can only update offers belonging to your hospital");
         }
 
-        UpdateOfferRequest.ProductRequest prodReq = request.product();
+        UpdateOfferRequestDTO.ProductRequestDTO prodReq = request.product();
         Product newProduct = new Product(
                 prodReq.name(),
                 prodReq.category(),
@@ -56,9 +56,9 @@ public class UpdateOfferUseCase {
 
         Offer savedOffer = offerRepositoryGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully updated offer with ID: {}", savedOffer.getId());
-        return OfferResponse.from(savedOffer);
+        return OfferResponseDTO.from(savedOffer);
     }
 }

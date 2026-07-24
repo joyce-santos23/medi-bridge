@@ -1,39 +1,42 @@
 package br.com.medibridge.medi_bridge.catalog.infra.web.mapper.hospital;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.AddressInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.RegisterHospitalInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.UpdateHospitalInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.AddressOutput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.RegisterHospitalOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.AddressInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.RegisterHospitalInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.UpdateHospitalInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.AddressOutputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.RegisterHospitalOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.enums.HospitalStatus;
 import br.com.medibridge.medi_bridge.catalog.core.domain.user.enums.ProfessionalCouncil;
 import br.com.medibridge.medi_bridge.catalog.infra.web.mapper.user.UserWebMapper;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.HospitalAddressResponse;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.HospitalResponse;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalRequest;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalResponse;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.UpdateHospitalRequest;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.HospitalAddressResponsePayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.HospitalResponsePayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalRequestPayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.RegisterHospitalResponsePayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.hospital.UpdateHospitalRequestPayload;
 
-public class HospitalWebMapper {
+public final class HospitalWebMapper {
 
-    public static RegisterHospitalInput toInput(RegisterHospitalRequest request) {
+    private HospitalWebMapper() {
+    }
 
+    public static RegisterHospitalInputDTO toInput(RegisterHospitalRequestPayload request) {
         if (request == null) {
             return null;
         }
 
-        AddressInput addressInput = null;
+        AddressInputDTO addressInput = null;
 
         if (request.address() != null) {
-            addressInput = new AddressInput(
+            addressInput = new AddressInputDTO(
                     request.address().zipCode(),
                     request.address().number(),
                     request.address().complement()
             );
         }
 
-        return new RegisterHospitalInput(
+        return new RegisterHospitalInputDTO(
                 request.name(),
                 request.cnpj(),
                 request.cnes(),
@@ -48,31 +51,29 @@ public class HospitalWebMapper {
         );
     }
 
-    public static UpdateHospitalInput toInput(UpdateHospitalRequest request) {
-
+    public static UpdateHospitalInputDTO toInput(UpdateHospitalRequestPayload request) {
         if (request == null) {
             return null;
         }
 
-        return new UpdateHospitalInput(
+        return new UpdateHospitalInputDTO(
                 request.email(),
                 request.phone(),
                 request.status() != null ? HospitalStatus.valueOf(request.status().name()) : null
         );
     }
 
-    public static HospitalResponse toResponse(HospitalOutput output) {
-
+    public static HospitalResponsePayload toResponse(HospitalOutputDTO output) {
         if (output == null) {
             return null;
         }
 
-        HospitalAddressResponse addressResponse = null;
+        HospitalAddressResponsePayload addressResponse = null;
 
         if (output.address() != null) {
-            AddressOutput address = output.address();
+            AddressOutputDTO address = output.address();
 
-            addressResponse = new HospitalAddressResponse(
+            addressResponse = new HospitalAddressResponsePayload(
                     address.street(),
                     address.number(),
                     address.complement(),
@@ -83,7 +84,7 @@ public class HospitalWebMapper {
             );
         }
 
-        return new HospitalResponse(
+        return new HospitalResponsePayload(
                 output.id(),
                 output.name(),
                 output.cnpj(),
@@ -95,13 +96,13 @@ public class HospitalWebMapper {
         );
     }
 
-    public static RegisterHospitalResponse toResponse(RegisterHospitalOutput output) {
 
+    public static RegisterHospitalResponsePayload toResponse(RegisterHospitalOutputDTO output) {
         if (output == null) {
             return null;
         }
 
-        return new RegisterHospitalResponse(
+        return new RegisterHospitalResponsePayload(
                 toResponse(output.hospital()),
                 UserWebMapper.toResponse(output.adminUser())
         );

@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.user;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.UpdateUserInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.input.UpdateUserInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.user.output.UserOutputDTO;
 import br.com.medibridge.medi_bridge.auth.core.application.port.security.PasswordEncoder;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.user.UserGateway;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
@@ -21,7 +21,7 @@ public class UpdateUserUseCase {
     private final UserGateway userGateway;
     private final PasswordEncoder passwordEncoder;
 
-    public UserOutput execute(AuthenticatedUser currentUser, UpdateUserInput input) {
+    public UserOutputDTO execute(AuthenticatedUser currentUser, UpdateUserInputDTO input) {
         log.info("Executing UpdateUserUseCase for user ID: {} by user ID: {}", input.id(), currentUser != null ? currentUser.id() : "anonymous");
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
@@ -51,6 +51,6 @@ public class UpdateUserUseCase {
 
         User updatedUser = userGateway.save(user);
         log.info("Successfully updated user profile for ID: {}", input.id());
-        return UserOutput.from(updatedUser);
+        return UserOutputDTO.from(updatedUser);
     }
 }

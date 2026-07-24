@@ -6,9 +6,9 @@ import br.com.medibridge.medi_bridge.catalog.core.application.usecase.user.GetAl
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.user.GetUserByIdUseCase;
 import br.com.medibridge.medi_bridge.catalog.core.application.usecase.user.UpdateUserUseCase;
 import br.com.medibridge.medi_bridge.catalog.infra.web.mapper.user.UserWebMapper;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.RegisterUserRequest;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.UpdateUserRequest;
-import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.UserResponse;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.RegisterUserRequestPayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.UpdateUserRequestPayload;
+import br.com.medibridge.medi_bridge.catalog.infra.web.payload.user.UserResponsePayload;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -37,8 +37,8 @@ public class UserController {
     private final GetAllUsersUseCase getAllUsersUseCase;
 
     @PostMapping
-    public ResponseEntity<UserResponse> create(
-            @Valid @RequestBody RegisterUserRequest request,
+    public ResponseEntity<UserResponsePayload> create(
+            @Valid @RequestBody RegisterUserRequestPayload request,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
         log.info("Request to create user with email: {} for hospital ID: {}", request.email(), request.hospitalId());
@@ -50,9 +50,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(
+    public ResponseEntity<UserResponsePayload> update(
             @PathVariable("id") UUID id,
-            @Valid @RequestBody UpdateUserRequest request,
+            @Valid @RequestBody UpdateUserRequestPayload request,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
         log.info("Request to update user profile ID: {}", id);
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getById(
+    public ResponseEntity<UserResponsePayload> getById(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAll(
+    public ResponseEntity<List<UserResponsePayload>> getAll(
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
         log.info("Request to list all users for hospital ID: {}", currentUser != null ? currentUser.hospitalId() : "anonymous");

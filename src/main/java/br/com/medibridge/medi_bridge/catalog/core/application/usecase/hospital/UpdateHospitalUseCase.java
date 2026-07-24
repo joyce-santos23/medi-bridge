@@ -1,7 +1,7 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.hospital;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.UpdateHospitalInput;
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.input.UpdateHospitalInputDTO;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.hospital.output.HospitalOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
 import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
@@ -24,7 +24,7 @@ public class UpdateHospitalUseCase {
     private final HospitalGateway hospitalGateway;
     private final AddressBaseGateway addressBaseGateway;
 
-    public HospitalOutput execute(AuthenticatedUser currentUser, UUID hospitalId, UpdateHospitalInput input) {
+    public HospitalOutputDTO execute(AuthenticatedUser currentUser, UUID hospitalId, UpdateHospitalInputDTO input) {
         log.info("Executing UpdateHospitalUseCase for hospital ID: {} by user ID: {}", hospitalId, currentUser != null ? currentUser.id() : "anonymous");
         if (currentUser == null) {
             throw new ForbiddenException("Authentication required");
@@ -56,6 +56,6 @@ public class UpdateHospitalUseCase {
                     return new NotFoundException("Address base not found");
                 });
 
-        return HospitalOutput.from(updatedHospital, addressBase);
+        return HospitalOutputDTO.from(updatedHospital, addressBase);
     }
 }

@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.catalog.core.application.usecase.address;
 
-import br.com.medibridge.medi_bridge.catalog.core.application.dto.address.output.ViaCepAddressOutput;
+import br.com.medibridge.medi_bridge.catalog.core.application.dto.address.output.ViaCepAddressOutputDTO;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.AddressBaseGateway;
 import br.com.medibridge.medi_bridge.catalog.core.application.port.address.ViaCepGateway;
 import br.com.medibridge.medi_bridge.catalog.core.domain.address.AddressBase;
@@ -22,7 +22,7 @@ public class FindOrCreateAddressBaseUseCase {
         return addressBaseGateway.findByZipCode(zipCode)
                 .orElseGet(() -> {
                     log.info("Address details not found in local database for zip code: {}. Querying external ViaCEP service.", zipCode);
-                    ViaCepAddressOutput viaCepAddress = viaCepGateway.findByZipCode(zipCode)
+                    ViaCepAddressOutputDTO viaCepAddress = viaCepGateway.findByZipCode(zipCode)
                             .orElseThrow(() -> {
                                 log.error("Address details not found in external ViaCEP service for zip code: {}", zipCode);
                                 return new NotFoundException("Address details not found for zip code: " + zipCode);

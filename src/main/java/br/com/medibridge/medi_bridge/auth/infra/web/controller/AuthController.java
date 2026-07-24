@@ -1,10 +1,10 @@
 package br.com.medibridge.medi_bridge.auth.infra.web.controller;
 
-import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.input.LoginInput;
-import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.output.LoginOutput;
+import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.input.LoginInputDTO;
+import br.com.medibridge.medi_bridge.auth.core.application.dto.auth.output.LoginOutputDTO;
 import br.com.medibridge.medi_bridge.auth.core.application.usecase.LoginUseCase;
-import br.com.medibridge.medi_bridge.auth.infra.web.payload.LoginRequest;
-import br.com.medibridge.medi_bridge.auth.infra.web.payload.LoginResponse;
+import br.com.medibridge.medi_bridge.auth.infra.web.payload.LoginRequestPayload;
+import br.com.medibridge.medi_bridge.auth.infra.web.payload.LoginResponsePayload;
 import br.com.medibridge.medi_bridge.catalog.infra.web.mapper.user.UserWebMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +24,12 @@ public class AuthController {
     private final LoginUseCase loginUseCase;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponsePayload> login(@Valid @RequestBody LoginRequestPayload request) {
         log.info("REST request to login for email: {}", request.email());
-        LoginInput input = new LoginInput(request.email(), request.password());
-        LoginOutput output = loginUseCase.execute(input);
+        LoginInputDTO input = new LoginInputDTO(request.email(), request.password());
+        LoginOutputDTO output = loginUseCase.execute(input);
         
-        LoginResponse response = new LoginResponse(
+        LoginResponsePayload response = new LoginResponsePayload(
                 output.token(),
                 UserWebMapper.toResponse(output.user())
         );

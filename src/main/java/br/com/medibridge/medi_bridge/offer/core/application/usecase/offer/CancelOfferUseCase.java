@@ -1,6 +1,6 @@
 package br.com.medibridge.medi_bridge.offer.core.application.usecase.offer;
 
-import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponse;
+import br.com.medibridge.medi_bridge.offer.core.application.dto.OfferResponseDTO;
 import br.com.medibridge.medi_bridge.shared.application.security.AuthenticatedUser;
 import br.com.medibridge.medi_bridge.offer.core.application.port.EventPublisherGateway;
 import br.com.medibridge.medi_bridge.offer.core.application.port.OfferRepositoryGateway;
@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CancelOfferUseCase {
 
-    private final OfferRepositoryGateway offerRepositoryGateway;
+    private final OfferRepositoryGateway offerGateway;
     private final EventPublisherGateway eventPublisherGateway;
 
-    public OfferResponse execute(AuthenticatedUser currentUser, UUID offerId) {
+    public OfferResponseDTO execute(AuthenticatedUser currentUser, UUID offerId) {
         log.info("Executing CancelOfferUseCase for offer ID: {} by user ID: {}", offerId, currentUser != null ? currentUser.id() : "anonymous");
 
         if (currentUser == null) {
@@ -32,7 +32,7 @@ public class CancelOfferUseCase {
             throw new ValidationException("Offer ID is required");
         }
 
-        Offer offer = offerRepositoryGateway.findById(offerId)
+        Offer offer = offerGateway.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Offer not found"));
 
         if (!offer.getHospitalId().equals(currentUser.hospitalId())) {
@@ -41,11 +41,11 @@ public class CancelOfferUseCase {
 
         offer.cancel();
 
-        Offer savedOffer = offerRepositoryGateway.save(offer);
+        Offer savedOffer = offerGateway.save(offer);
 
-        eventPublisherGateway.publish(savedOffer.pullDomainEvents());
+        eventPublisherGateway.publish(offer.pullDomainEvents());
 
         log.info("Successfully cancelled offer with ID: {}", savedOffer.getId());
-        return OfferResponse.from(savedOffer);
+        return OfferResponseDTO.from(savedOffer);
     }
 }

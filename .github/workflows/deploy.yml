@@ -1,0 +1,31 @@
+name: Deploy to AWS Elastic Beanstalk (Docker)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    name: Build & Deploy Docker App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Criar pacote de código com Dockerfile para o Beanstalk
+        run: |
+          zip -r deploy.zip Dockerfile pom.xml src/ mvnw .mvn/
+
+      - name: Deploy no AWS Elastic Beanstalk (Plataforma Docker)
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: medi-bridge
+          environment_name: medi-bridge-prod-env
+          version_label: "v-${{ github.sha }}"
+          region: us-east-1
+          deployment_package: deploy.zip

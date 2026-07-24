@@ -2,6 +2,7 @@ package br.com.medibridge.medi_bridge.catalog.infra.persistence.adapter.hospital
 
 import br.com.medibridge.medi_bridge.catalog.core.application.port.hospital.HospitalGateway;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.entity.Hospital;
+import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.enums.HospitalStatus;
 import br.com.medibridge.medi_bridge.catalog.core.domain.hospital.valueobject.Cnpj;
 import br.com.medibridge.medi_bridge.catalog.infra.persistence.entity.address.AddressBaseEntity;
 import br.com.medibridge.medi_bridge.catalog.infra.persistence.entity.hospital.HospitalEntity;
@@ -11,6 +12,7 @@ import br.com.medibridge.medi_bridge.catalog.infra.persistence.repository.hospit
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -74,5 +76,12 @@ public class HospitalPersistenceAdapter implements HospitalGateway {
     @Override
     public boolean existsByCnesAndIdNot(String cnes, UUID id) {
         return repository.existsByCnesAndIdNot(cnes, id);
+    }
+
+    @Override
+    public List<Hospital> findAllActive() {
+        return repository.findByStatus(HospitalStatus.ACTIVE).stream()
+                .map(HospitalPersistenceMapper::toDomain)
+                .toList();
     }
 }
