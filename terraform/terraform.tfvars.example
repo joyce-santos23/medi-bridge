@@ -1,0 +1,20 @@
+# Configurações AWS
+aws_region = "us-east-1"
+
+# Configurações do Projeto
+app_name    = "medi-bridge"
+environment = "prod"
+
+# Configurações do Banco PostgreSQL RDS
+db_name           = "medibridge"
+db_user           = "medibridge"
+db_password       = "MediBridge@2026!"
+db_instance_class = "db.t3.micro"
+db_port           = 5432
+
+# Configurações do Elastic Beanstalk
+ec2_instance_type   = "t3.micro"
+solution_stack_name = "64bit Amazon Linux 2023 v4.4.1 running Docker"
+
+# Configurações SES
+aws_ses_from_email = "abdalla.joyce@gmail.com"

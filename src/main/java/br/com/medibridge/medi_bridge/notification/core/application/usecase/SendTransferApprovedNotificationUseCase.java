@@ -45,7 +45,7 @@ public class SendTransferApprovedNotificationUseCase {
                 "- Hospital Doador: %s\n" +
                 "- Insumo: %s\n" +
                 "- Quantidade: %d %s\n\n" +
-                "Por favor, providencie a logística para a retirada dos insumos.\n\n" +
+                "Por favor, acesse a plataforma para mais informações e providencie a logística para a retirada dos insumos.\n\n" +
                 "Atenciosamente,\nEquipe MediBridge",
                 requesterHospital.name(),
                 donorHospital.name(),
